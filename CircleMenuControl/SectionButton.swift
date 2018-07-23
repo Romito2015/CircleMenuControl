@@ -46,15 +46,15 @@ class SectionButton: UIView {
         self.backgroundView.alpha = self.isHighLighted ? 1.0 : 0
         
         self.addSubview(self.backgroundView)
-        let iconSide: CGFloat = 50
+        let iconSide: CGFloat = 70
         
         let sectorRect = CGRect(x: 0,
                                 y: 0,
-                                width: iconSide,
+                                width: iconSide + 30,
                                 height: iconSide)
         
         self.buttonnContentHolder = ButtonContent(with: sectorRect, icon: self.model.icon, title: self.model.title)
-        self.buttonnContentHolder.center = CGPoint(x: rect.width/2, y: rect.height/2 - 10)
+        self.buttonnContentHolder.center = CGPoint(x: rect.width/2, y: rect.height/2)
         self.buttonnContentHolder.backgroundColor = .clear
         self.buttonnContentHolder.transform = CGAffineTransform(rotationAngle: angle)
         self.addSubview(self.buttonnContentHolder)
@@ -82,7 +82,7 @@ class ButtonContent: UIView {
     
     override func draw(_ rect: CGRect) {
         
-        let side: CGFloat = rect.width * 0.7
+        let side: CGFloat = rect.height * 0.7
         self.iconView = UIImageView(frame: CGRect(origin: CGPoint(x: rect.width/2 - side/2, y: 0),
                                                   size: CGSize(width: side, height: side)))
 

@@ -10,7 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    let side: CGFloat = 300
     var label = UILabel()
+    var circleControl: CircleMenu?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -19,19 +22,12 @@ class ViewController: UIViewController {
         self.label.backgroundColor = .lightGray
         self.view.addSubview(label)
         
-        let side: CGFloat = 200
-        
-        let circleControl =  CircleMenu(with: CGRect(origin: .zero, size: CGSize(width: side, height: side)),
-                                        delegate: self,
-                                        menuSet: CircleMenuFactory().marketplace)
-        self.view.addSubview(circleControl)
-        
+        self.circleControl =  CircleMenu(with: CGRect(origin: .zero, size: CGSize(width: side, height: side)),
+                                         delegate: self,
+                                         menuSet: CircleMenuFactory().freelance)
+        self.view.addSubview(circleControl!)
     }
-    
-    
 }
-
-
 
 protocol CircleMenuProtocol: class {
     func segmentDidSelect(_ newValue: String)
@@ -43,8 +39,6 @@ extension ViewController: CircleMenuProtocol {
     }
 }
 
-typealias EmptyAction = () -> ()
-
 class CircleMenuSet {
     let title: String
     let items: [CircleMenuItem]
@@ -53,7 +47,6 @@ class CircleMenuSet {
         self.title = title
         self.items = items
     }
-    
 }
 
 class CircleMenuItem {
@@ -67,10 +60,3 @@ class CircleMenuItem {
         self.isEnabled = isEnabled
     }
 }
-
-
-
-
-
-
-

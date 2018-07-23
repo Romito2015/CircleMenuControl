@@ -16,11 +16,19 @@ class CircleMenu: UIControl {
     var currentSectorIndex: Int?
     var sectors = [Sector]()
     
-    var data: CircleMenuSet!
+    var data: CircleMenuSet! {
+        didSet {
+            self.sectors = [Sector]()
+            self.currentSectorIndex = nil
+            self.container.removeFromSuperview()
+            self.container = nil
+            self.setNeedsDisplay()
+        }
+    }
     
-    lazy var fanWidth: CGFloat = {
-       return (2 * .pi) / CGFloat(data.items.count)
-    }()
+    var fanWidth: CGFloat {
+        return (2 * .pi) / CGFloat(self.data.items.count)
+    }
     
     required init(with rect: CGRect, delegate: CircleMenuProtocol, menuSet: CircleMenuSet) {
         super.init(frame: rect)
@@ -77,7 +85,6 @@ class CircleMenu: UIControl {
             
             self.container.addSubview(separator)
             
-            
             // Set sector image
             
             let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), model: self.data.items[index], angle: 2 * .pi - sector.midValue)
@@ -101,11 +108,7 @@ class CircleMenu: UIControl {
                                    trailingAngle: end - .pi/2)
             self.container.addSubview(segment)
             sector.button = segment
-            
-            
         }
-        
-        
         
         self.container.isUserInteractionEnabled = false
         self.addSubview(self.container)
@@ -132,23 +135,27 @@ class CircleMenu: UIControl {
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         self.delegate?.segmentDidSelect("Sector: \(self.currentSectorIndex ?? -1) was perssed")
         self.deSelectSegment(atIndex: self.currentSectorIndex)
+        
+        self.data = CircleMenuFactory().virtualGoods
     }
     
-    func selectSegment(atIndex index: Int) {
+    //MARK: Private methods
+    
+    private func selectSegment(atIndex index: Int) {
         if let button = self.sectors[index].button {
             self.currentSectorIndex = index
             button.isHighLighted = true
         }
     }
     
-    func deSelectSegment(atIndex index: Int?) {
+    private func deSelectSegment(atIndex index: Int?) {
         if let thisIndex = index, let button = self.sectors[thisIndex].button {
             self.currentSectorIndex = nil
             button.isHighLighted = false
         }
     }
     
-    func detectSelectedSegment(formTouch touchPoint: CGPoint) -> Sector? {
+    private func detectSelectedSegment(formTouch touchPoint: CGPoint) -> Sector? {
         // Get inverted touch angle value
         let dx = container.center.x - touchPoint.x
         let dy = container.center.y - touchPoint.y
@@ -171,9 +178,6 @@ class CircleMenu: UIControl {
         return nil
     }
     
-    
-    //MARK: Private methods
-    
     private func calculateDistance(fromCenter point: CGPoint) -> CGFloat {
         let center = CGPoint(x: bounds.size.width/2, y: bounds.size.height/2)
         let dx = CGFloat(point.x - center.x)
@@ -185,7 +189,7 @@ class CircleMenu: UIControl {
     private func ignoreTaps(forTouch touchPoint: CGPoint) -> Bool {
         let dist: CGFloat = calculateDistance(fromCenter: touchPoint)
         
-        if dist < 40 || dist > 100 {
+        if dist < self.separatorPadding || dist > self.container.bounds.width/2 {
             print("Ignoring tap \(touchPoint.x), \(touchPoint.y)")
             self.deSelectSegment(atIndex: self.currentSectorIndex)
             return false
@@ -210,10 +214,6 @@ class CircleMenu: UIControl {
         let trailingBottomPoint = self.getPointCoordinate(withCenterIn: bottomCenter,
                                                           radius: innerPadding,
                                                           angle: trailingAngle)
-        
-        
-        
-        
         let path = UIBezierPath()
         path.move(to: leadingBottomPoint)
         path.addLine(to: leadingTopPoint)
@@ -223,9 +223,5 @@ class CircleMenu: UIControl {
         path.close()
         
         view.mask(withPath: path, inverse: false)
-        
     }
-    
-    
-    
 }
