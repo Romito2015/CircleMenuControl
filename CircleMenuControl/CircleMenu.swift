@@ -16,16 +16,16 @@ class CircleMenu: UIControl {
     var currentSectorIndex: Int?
     var sectors = [Sector]()
     
-    var numberOfSections: Int!
+    var data: CircleMenuSet!
     
     lazy var fanWidth: CGFloat = {
-       return (2 * .pi) / CGFloat(numberOfSections)
+       return (2 * .pi) / CGFloat(data.items.count)
     }()
     
-    init(with rect: CGRect, delegate: CircleMenuProtocol, sectionsNumber: Int) {
+    required init(with rect: CGRect, delegate: CircleMenuProtocol, menuSet: CircleMenuSet) {
         super.init(frame: rect)
         self.delegate = delegate
-        self.numberOfSections = sectionsNumber
+        self.data = menuSet
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -43,11 +43,11 @@ class CircleMenu: UIControl {
         self.container = UIView(frame: rect)
         self.container.backgroundColor = .white
         
-        for index in 0..<numberOfSections {
+        for index in 0..<self.data.items.count {
             // Create the Sectors
             var endAngle = self.fanWidth * CGFloat(index) + self.fanWidth/2
             
-            if self.numberOfSections == 2 {
+            if self.data.items.count == 2 {
                 endAngle = self.fanWidth * CGFloat(index)
             }
             
@@ -80,7 +80,7 @@ class CircleMenu: UIControl {
             
             // Set sector image
             
-            let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), index: index, angle: 2 * .pi - sector.midValue)
+            let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), model: self.data.items[index], angle: 2 * .pi - sector.midValue)
             
             segment.backgroundColor = .clear
             segment.isHighLighted = false

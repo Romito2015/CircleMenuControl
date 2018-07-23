@@ -18,6 +18,7 @@
 		B7316A46210611E70012EF70 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A45210611E70012EF70 /* GradientView.swift */; };
 		B7316A48210611ED0012EF70 /* UIView+Mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A47210611ED0012EF70 /* UIView+Mask.swift */; };
 		B7316A4A210624CE0012EF70 /* GeometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A49210624CE0012EF70 /* GeometryHelper.swift */; };
+		B7316A4C21066AAC0012EF70 /* CircleMenuFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		B7316A45210611E70012EF70 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		B7316A47210611ED0012EF70 /* UIView+Mask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Mask.swift"; sourceTree = "<group>"; };
 		B7316A49210624CE0012EF70 /* GeometryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryHelper.swift; sourceTree = "<group>"; };
+		B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleMenuFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 			children = (
 				B7316A2D210611910012EF70 /* AppDelegate.swift */,
 				B7316A2F210611910012EF70 /* ViewController.swift */,
+				B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */,
 				B7316A3F210611C40012EF70 /* CircleMenu.swift */,
 				B7316A41210611D90012EF70 /* Sector.swift */,
 				B7316A49210624CE0012EF70 /* GeometryHelper.swift */,
@@ -155,6 +158,7 @@
 			files = (
 				B7316A40210611C40012EF70 /* CircleMenu.swift in Sources */,
 				B7316A44210611E00012EF70 /* SectionButton.swift in Sources */,
+				B7316A4C21066AAC0012EF70 /* CircleMenuFactory.swift in Sources */,
 				B7316A46210611E70012EF70 /* GradientView.swift in Sources */,
 				B7316A30210611910012EF70 /* ViewController.swift in Sources */,
 				B7316A2E210611910012EF70 /* AppDelegate.swift in Sources */,

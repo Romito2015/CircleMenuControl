@@ -23,11 +23,11 @@ class SectionButton: UIView {
     
     var angle: CGFloat!
     
-    var index: Int!
+    var model: CircleMenuItem!
     
-    required init(with frame: CGRect, index: Int, angle: CGFloat) {
+    required init(with frame: CGRect, model: CircleMenuItem, angle: CGFloat) {
         super.init(frame: frame)
-        self.index = index
+        self.model = model
         self.angle = angle
     }
     
@@ -53,8 +53,7 @@ class SectionButton: UIView {
                                 width: iconSide,
                                 height: iconSide)
         
-        let img = UIImage(named: String(format: "icon%i.png", self.index))
-        self.buttonnContentHolder = ButtonContent(with: sectorRect, icon: img!, title: "\(index)")
+        self.buttonnContentHolder = ButtonContent(with: sectorRect, icon: self.model.icon, title: self.model.title)
         self.buttonnContentHolder.center = CGPoint(x: rect.width/2, y: rect.height/2 - 10)
         self.buttonnContentHolder.backgroundColor = .clear
         self.buttonnContentHolder.transform = CGAffineTransform(rotationAngle: angle)
@@ -90,7 +89,8 @@ class ButtonContent: UIView {
         self.iconView.image = self.image
         self.addSubview(iconView)
         
-        self.titleLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: self.iconView.bounds.height), size: CGSize(width: rect.width, height: rect.height - self.iconView.bounds.height)))
+        self.titleLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: self.iconView.bounds.height),
+                                                size: CGSize(width: rect.width, height: rect.height - self.iconView.bounds.height)))
         self.titleLabel.numberOfLines = 1
         self.titleLabel.textAlignment = .center
         let font = UIFont(name: "HelveticaNeue", size: 10)
