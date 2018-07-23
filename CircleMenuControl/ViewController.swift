@@ -9,17 +9,34 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    var label = UILabel()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        self.label = UILabel(frame: CGRect(x: 100, y: 350, width: 120, height: 30))
+        self.label.textAlignment = .center
+        self.label.backgroundColor = .lightGray
+        self.view.addSubview(label)
+        
+        let side: CGFloat = 200
+        
+        
+        let circleControl =  CircleMenu(with: CGRect(origin: .zero, size: CGSize(width: side, height: side)), delegate: self, sectionsNumber: 3)
+        self.view.addSubview(circleControl)
+        
     }
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+protocol CircleMenuProtocol: class {
+    func segmentDidSelect(_ newValue: String)
+}
+
+extension ViewController: CircleMenuProtocol {
+    func segmentDidSelect(_ newValue: String) {
+        self.label.text = newValue
     }
-
-
+    
+    
 }
 
