@@ -24,6 +24,6 @@ class Sector: NSObject {
     }
     
     override var description: String {
-        return "\(type(of: self)): \(sector), min: \(minValue.radiansToDegrees), mid: \(midValue.radiansToDegrees), max: \(maxValue.radiansToDegrees)"
+        return "\(type(of: self)): \(sector), min: \(minValue), mid: \(midValue), max: \(maxValue)"
     }
 }

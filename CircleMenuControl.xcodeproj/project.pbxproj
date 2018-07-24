@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B72BB627210763970025115A /* CircleMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72BB626210763970025115A /* CircleMenuItem.swift */; };
+		B72BB62A210763CF0025115A /* CircleMenuSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72BB629210763CF0025115A /* CircleMenuSet.swift */; };
+		B72BB62D210764510025115A /* CircleMenuProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72BB62C210764510025115A /* CircleMenuProtocol.swift */; };
 		B7316A2E210611910012EF70 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A2D210611910012EF70 /* AppDelegate.swift */; };
 		B7316A30210611910012EF70 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A2F210611910012EF70 /* ViewController.swift */; };
 		B7316A33210611910012EF70 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7316A31210611910012EF70 /* Main.storyboard */; };
@@ -17,11 +20,13 @@
 		B7316A44210611E00012EF70 /* SectionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A43210611E00012EF70 /* SectionButton.swift */; };
 		B7316A46210611E70012EF70 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A45210611E70012EF70 /* GradientView.swift */; };
 		B7316A48210611ED0012EF70 /* UIView+Mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A47210611ED0012EF70 /* UIView+Mask.swift */; };
-		B7316A4A210624CE0012EF70 /* GeometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A49210624CE0012EF70 /* GeometryHelper.swift */; };
 		B7316A4C21066AAC0012EF70 /* CircleMenuFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B72BB626210763970025115A /* CircleMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleMenuItem.swift; sourceTree = "<group>"; };
+		B72BB629210763CF0025115A /* CircleMenuSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleMenuSet.swift; sourceTree = "<group>"; };
+		B72BB62C210764510025115A /* CircleMenuProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleMenuProtocol.swift; sourceTree = "<group>"; };
 		B7316A2A210611910012EF70 /* CircleMenuControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CircleMenuControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7316A2D210611910012EF70 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7316A2F210611910012EF70 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -34,7 +39,6 @@
 		B7316A43210611E00012EF70 /* SectionButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionButton.swift; sourceTree = "<group>"; };
 		B7316A45210611E70012EF70 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		B7316A47210611ED0012EF70 /* UIView+Mask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Mask.swift"; sourceTree = "<group>"; };
-		B7316A49210624CE0012EF70 /* GeometryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryHelper.swift; sourceTree = "<group>"; };
 		B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleMenuFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,6 +53,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B72BB628210763BB0025115A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */,
+				B72BB626210763970025115A /* CircleMenuItem.swift */,
+				B72BB629210763CF0025115A /* CircleMenuSet.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B72BB62B210764380025115A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				B72BB62C210764510025115A /* CircleMenuProtocol.swift */,
+				B7316A3F210611C40012EF70 /* CircleMenu.swift */,
+				B72BB62F2107652E0025115A /* Sector */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		B72BB62E210764A20025115A /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				B7316A47210611ED0012EF70 /* UIView+Mask.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		B72BB62F2107652E0025115A /* Sector */ = {
+			isa = PBXGroup;
+			children = (
+				B7316A41210611D90012EF70 /* Sector.swift */,
+				B7316A43210611E00012EF70 /* SectionButton.swift */,
+				B7316A45210611E70012EF70 /* GradientView.swift */,
+			);
+			path = Sector;
+			sourceTree = "<group>";
+		};
 		B7316A21210611910012EF70 = {
 			isa = PBXGroup;
 			children = (
@@ -70,13 +112,9 @@
 			children = (
 				B7316A2D210611910012EF70 /* AppDelegate.swift */,
 				B7316A2F210611910012EF70 /* ViewController.swift */,
-				B7316A4B21066AAC0012EF70 /* CircleMenuFactory.swift */,
-				B7316A3F210611C40012EF70 /* CircleMenu.swift */,
-				B7316A41210611D90012EF70 /* Sector.swift */,
-				B7316A49210624CE0012EF70 /* GeometryHelper.swift */,
-				B7316A43210611E00012EF70 /* SectionButton.swift */,
-				B7316A45210611E70012EF70 /* GradientView.swift */,
-				B7316A47210611ED0012EF70 /* UIView+Mask.swift */,
+				B72BB628210763BB0025115A /* Model */,
+				B72BB62B210764380025115A /* Core */,
+				B72BB62E210764A20025115A /* Extension */,
 				B7316A31210611910012EF70 /* Main.storyboard */,
 				B7316A34210611920012EF70 /* Assets.xcassets */,
 				B7316A36210611920012EF70 /* LaunchScreen.storyboard */,
@@ -156,13 +194,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B72BB62D210764510025115A /* CircleMenuProtocol.swift in Sources */,
 				B7316A40210611C40012EF70 /* CircleMenu.swift in Sources */,
 				B7316A44210611E00012EF70 /* SectionButton.swift in Sources */,
 				B7316A4C21066AAC0012EF70 /* CircleMenuFactory.swift in Sources */,
+				B72BB627210763970025115A /* CircleMenuItem.swift in Sources */,
 				B7316A46210611E70012EF70 /* GradientView.swift in Sources */,
 				B7316A30210611910012EF70 /* ViewController.swift in Sources */,
 				B7316A2E210611910012EF70 /* AppDelegate.swift in Sources */,
-				B7316A4A210624CE0012EF70 /* GeometryHelper.swift in Sources */,
+				B72BB62A210763CF0025115A /* CircleMenuSet.swift in Sources */,
 				B7316A42210611D90012EF70 /* Sector.swift in Sources */,
 				B7316A48210611ED0012EF70 /* UIView+Mask.swift in Sources */,
 			);

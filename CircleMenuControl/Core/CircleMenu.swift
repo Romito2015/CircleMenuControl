@@ -48,8 +48,6 @@ class CircleMenu: UIControl {
         return (2 * .pi) / CGFloat(items.count)
     }
     
-    
-    
     required init(with rect: CGRect, delegate: CircleMenuProtocol, menuSet: CircleMenuSet) {
         super.init(frame: rect)
         self.delegate = delegate
@@ -133,9 +131,6 @@ class CircleMenu: UIControl {
         self.container.isUserInteractionEnabled = false
         self.addSubview(self.container)
         
-        // Call delegate method
-        self.delegate?.segmentDidSelect("Value is: \(self.currentSectorIndex ?? -1)")
-        
         // Add Central image
         let mask = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 58, height: 58)))
         mask.image = UIImage(named: "wheel")
@@ -153,18 +148,10 @@ class CircleMenu: UIControl {
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        self.delegate?.segmentDidSelect("Sector: \(self.currentSectorIndex ?? -1) was perssed")
         if let selectedIndex = self.currentSectorIndex, let button = self.sectors[selectedIndex].button {
             self.delegate?.didselect(self, with: button.model.parrentType)
         }
         self.deSelectSegment(atIndex: self.currentSectorIndex)
-        
-        
-        
-        
-        
-        
-//        self.data = CircleMenuFactory().virtualGoods
     }
     
     //MARK: Private methods
