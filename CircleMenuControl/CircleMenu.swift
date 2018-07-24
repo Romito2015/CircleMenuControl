@@ -16,7 +16,7 @@ class CircleMenu: UIControl {
     var currentSectorIndex: Int?
     var sectors = [Sector]()
     
-    var data: CircleMenuSet! {
+    var menuNavigationStack = [CircleMenuSet]() {
         didSet {
             self.sectors = [Sector]()
             self.currentSectorIndex = nil
@@ -26,14 +26,34 @@ class CircleMenu: UIControl {
         }
     }
     
-    var fanWidth: CGFloat {
-        return (2 * .pi) / CGFloat(self.data.items.count)
+    private var dataSource: CircleMenuSet? {
+        return self.menuNavigationStack.last
     }
+    
+    public func updateMenu(with newMenuSet: CircleMenuSet) {
+        self.menuNavigationStack.append(newMenuSet)
+    }
+    
+    public func navigateBackInMenuStack() {
+        if self.menuNavigationStack.count > 1 {
+            let lastIndex = self.menuNavigationStack.count - 1
+            self.menuNavigationStack.remove(at: lastIndex)
+        } else {
+            print("this is first element")
+        }
+    }
+    
+    private var fanWidth: CGFloat {
+        guard let items = self.dataSource?.items else { return 0 }
+        return (2 * .pi) / CGFloat(items.count)
+    }
+    
+    
     
     required init(with rect: CGRect, delegate: CircleMenuProtocol, menuSet: CircleMenuSet) {
         super.init(frame: rect)
         self.delegate = delegate
-        self.data = menuSet
+        self.menuNavigationStack.append(menuSet)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -47,15 +67,15 @@ class CircleMenu: UIControl {
     let separatorPadding: CGFloat = 30
     
     override func draw(_ rect: CGRect) {
-        
+        guard let items = self.dataSource?.items else { return }
         self.container = UIView(frame: rect)
         self.container.backgroundColor = .white
         
-        for index in 0..<self.data.items.count {
+        for index in 0..<items.count {
             // Create the Sectors
             var endAngle = self.fanWidth * CGFloat(index) + self.fanWidth/2
             
-            if self.data.items.count == 2 {
+            if items.count == 2 {
                 endAngle = self.fanWidth * CGFloat(index)
             }
             
@@ -87,7 +107,7 @@ class CircleMenu: UIControl {
             
             // Set sector image
             
-            let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), model: self.data.items[index], angle: 2 * .pi - sector.midValue)
+            let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), model: items[index], angle: 2 * .pi - sector.midValue)
             
             segment.backgroundColor = .clear
             segment.isHighLighted = false
@@ -134,9 +154,17 @@ class CircleMenu: UIControl {
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         self.delegate?.segmentDidSelect("Sector: \(self.currentSectorIndex ?? -1) was perssed")
+        if let selectedIndex = self.currentSectorIndex, let button = self.sectors[selectedIndex].button {
+            self.delegate?.didselect(self, with: button.model.parrentType)
+        }
         self.deSelectSegment(atIndex: self.currentSectorIndex)
         
-        self.data = CircleMenuFactory().virtualGoods
+        
+        
+        
+        
+        
+//        self.data = CircleMenuFactory().virtualGoods
     }
     
     //MARK: Private methods

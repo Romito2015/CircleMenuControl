@@ -53,7 +53,7 @@ class SectionButton: UIView {
                                 width: iconSide + 30,
                                 height: iconSide)
         
-        self.buttonnContentHolder = ButtonContent(with: sectorRect, icon: self.model.icon, title: self.model.title)
+        self.buttonnContentHolder = ButtonContent(with: sectorRect, icon: self.model.icon, title: self.model.title, isEnabled: model.isEnabled)
         self.buttonnContentHolder.center = CGPoint(x: rect.width/2, y: rect.height/2)
         self.buttonnContentHolder.backgroundColor = .clear
         self.buttonnContentHolder.transform = CGAffineTransform(rotationAngle: angle)
@@ -64,16 +64,24 @@ class SectionButton: UIView {
 
 class ButtonContent: UIView {
     
-    var iconView: UIImageView!
-    var titleLabel: UILabel!
+    private let enabledTitleColor: UIColor = .yellow
+    private let disabledTitleColor: UIColor = .darkText
+    
+    private let enabledIconColor: UIColor = .red
+    private let disabledIconColor: UIColor = .darkGray
+    
+    private var iconView: UIImageView!
+    private var titleLabel: UILabel!
     
     var image: UIImage!
     var title: String!
+    var isEnabled: Bool!
     
-    required init(with frame: CGRect, icon: UIImage, title: String) {
+    required init(with frame: CGRect, icon: UIImage, title: String, isEnabled: Bool) {
         super.init(frame: frame)
         self.image = icon
         self.title = title
+        self.isEnabled = isEnabled
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -85,8 +93,9 @@ class ButtonContent: UIView {
         let side: CGFloat = rect.height * 0.7
         self.iconView = UIImageView(frame: CGRect(origin: CGPoint(x: rect.width/2 - side/2, y: 0),
                                                   size: CGSize(width: side, height: side)))
-
-        self.iconView.image = self.image
+        
+        self.iconView.image = self.image.withRenderingMode(.alwaysTemplate)
+        self.iconView.tintColor = self.isEnabled ? self.enabledIconColor : self.disabledIconColor
         self.addSubview(iconView)
         
         self.titleLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: self.iconView.bounds.height),
@@ -96,6 +105,7 @@ class ButtonContent: UIView {
         let font = UIFont(name: "HelveticaNeue", size: 10)
         self.titleLabel.font = font
         self.titleLabel.text = self.title
+        self.titleLabel.textColor = self.isEnabled ? self.enabledTitleColor : self.disabledTitleColor
         
         self.addSubview(self.titleLabel)
     }
