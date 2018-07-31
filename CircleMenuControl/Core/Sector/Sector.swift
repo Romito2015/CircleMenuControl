@@ -8,22 +8,18 @@
 
 import UIKit
 
-class Sector: NSObject {
+class Sector {
     var minValue: CGFloat
     var midValue: CGFloat
     var maxValue: CGFloat
-    var sector: Int
+    var index: Int
     
-    var button: SectionButton?
+    var section: SectionView?
     
-    required init(with sector: Int, min: CGFloat, mid: CGFloat, max: CGFloat) {
+    required init(index: Int, min: CGFloat, mid: CGFloat, max: CGFloat) {
+        self.index = index
         self.minValue = min
         self.midValue = mid
         self.maxValue = max
-        self.sector = sector
-    }
-    
-    override var description: String {
-        return "\(type(of: self)): \(sector), min: \(minValue), mid: \(midValue), max: \(maxValue)"
     }
 }

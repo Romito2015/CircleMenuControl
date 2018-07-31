@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIView {
-    func mask(withRect rect: CGRect, inverse: Bool = false) {
+    func applyMask(withRect rect: CGRect, inverse: Bool = false) {
         let path = UIBezierPath(rect: rect)
         let maskLayer = CAShapeLayer()
         
@@ -23,7 +23,7 @@ extension UIView {
         self.layer.mask = maskLayer
     }
     
-    func mask(withPath path: UIBezierPath, inverse: Bool = false) {
+    func applyMask(withPath path: UIBezierPath, inverse: Bool = false) {
         let path = path
         let maskLayer = CAShapeLayer()
         

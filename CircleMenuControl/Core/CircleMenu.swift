@@ -10,14 +10,18 @@ import UIKit
 
 class CircleMenu: UIControl {
     
-    var container: UIView!
+    weak var delegate: CircleMenuDelegate?
     
-    weak var delegate: CircleMenuProtocol?
-    var currentSectorIndex: Int?
-    var sectors = [Sector]()
+    private var container: UIView!
+    private var sectors = [Sector]()
+    private(set) var currentSectorIndex: Int?
+    private let separatorPadding: CGFloat = 30
     
-    var menuNavigationStack = [CircleMenuSet]() {
+    private var menuNavigationStack = [CircleMenuSet]() {
         didSet {
+            if let data = self.dataSource {
+                self.delegate?.didChangeCurrentSet(self, title: data.title)
+            }
             self.sectors = [Sector]()
             self.currentSectorIndex = nil
             self.container.removeFromSuperview()
@@ -25,157 +29,181 @@ class CircleMenu: UIControl {
             self.setNeedsDisplay()
         }
     }
-    
     private var dataSource: CircleMenuSet? {
         return self.menuNavigationStack.last
     }
+    
+    private var containerCenter: CGPoint {
+        return CGPoint(x: self.container.bounds.width/2, y: self.container.bounds.height/2)
+    }
+    
+    private var segmentAngle: CGFloat {
+        guard let items = self.dataSource?.items else { return 0 }
+        return (2 * .pi) / CGFloat(items.count)
+    }
+    
+    
+    //MARK: Public methods
     
     public func updateMenu(with newMenuSet: CircleMenuSet) {
         self.menuNavigationStack.append(newMenuSet)
     }
     
-    public func navigateBackInMenuStack() {
+    public func navigateBackInMenuStack() -> Bool {
         if self.menuNavigationStack.count > 1 {
             let lastIndex = self.menuNavigationStack.count - 1
             self.menuNavigationStack.remove(at: lastIndex)
-        } else {
-            print("this is first element")
+            return true
         }
+        return false
     }
     
-    private var fanWidth: CGFloat {
-        guard let items = self.dataSource?.items else { return 0 }
-        return (2 * .pi) / CGFloat(items.count)
-    }
     
-    required init(with rect: CGRect, delegate: CircleMenuProtocol, menuSet: CircleMenuSet) {
+    //MARK: - Init
+    
+    required init(rect: CGRect, delegate: CircleMenuDelegate, menuSet: CircleMenuSet) {
         super.init(frame: rect)
         self.delegate = delegate
         self.menuNavigationStack.append(menuSet)
+        self.backgroundColor = .clear
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    lazy var containerCenter: CGPoint = {
-        return CGPoint(x: self.container.bounds.width/2, y: self.container.bounds.height/2)
-    }()
-    
-    let separatorPadding: CGFloat = 30
+    //MARK: - Override
     
     override func draw(_ rect: CGRect) {
         guard let items = self.dataSource?.items else { return }
         self.container = UIView(frame: rect)
-        self.container.backgroundColor = .white
+        self.container.backgroundColor = .clear
         
         for index in 0..<items.count {
             // Create the Sectors
-            var endAngle = self.fanWidth * CGFloat(index) + self.fanWidth/2
-            
-            if items.count == 2 {
-                endAngle = self.fanWidth * CGFloat(index)
-            }
-            
-            let startAngle = endAngle - self.fanWidth
-            let midAngle = startAngle + self.fanWidth/2
-            
-            let sector = Sector(with: index,
-                                min: startAngle,
-                                mid: midAngle,
-                                max: endAngle)
-            
+            let sector = self.createSector(at: index, itemsCount: items.count, angle: self.segmentAngle)
             self.sectors.append(sector)
             
             // Draw Separator
-            
-            let separatorHeight: CGFloat = rect.height/2 - separatorPadding
-            let separator = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 1, height: separatorHeight)))
-            separator.backgroundColor = .red
-            separator.layer.anchorPoint = CGPoint(x: 0.5, y: 1)
-            
-            
-            let separatorStartPoint = self.getPointCoordinate(withCenterIn: self.containerCenter,
-                                                              radius: separatorPadding,
-                                                              angle: endAngle - .pi/2)
-            separator.layer.position = separatorStartPoint
-            separator.transform = CGAffineTransform(rotationAngle: endAngle)
-            
+            let separatorHeight: CGFloat = rect.height/2 - self.separatorPadding
+            let separator = self.createSeparator(padding: self.separatorPadding,
+                                                 height: separatorHeight,
+                                                 angle: sector.maxValue,
+                                                 center: self.containerCenter,
+                                                 color: .red)
             self.container.addSubview(separator)
             
             // Set sector image
             
-            let segment = SectionButton(with: CGRect(origin: .zero, size: CGSize(width: self.container.bounds.width, height: self.container.bounds.height/2)), model: items[index], angle: 2 * .pi - sector.midValue)
+            let section = self.createSection(in: self.container, rotationAngle: sector.midValue, model: items[index])
+            self.container.addSubview(section)
+            sector.section = section
             
-            segment.backgroundColor = .clear
-            segment.isHighLighted = false
+            let end: CGFloat = self.segmentAngle/2
+            let start: CGFloat = end - self.segmentAngle
             
-            segment.layer.anchorPoint = CGPoint(x: 0.5, y: 1)
-            segment.layer.position = CGPoint(x: self.containerCenter.x - self.container.frame.origin.x,
-                                             y: self.containerCenter.y - self.container.frame.origin.y)
-            segment.transform = CGAffineTransform(rotationAngle: sector.midValue)
-            segment.tag = index
-            
-            let end: CGFloat = self.fanWidth/2
-            let start: CGFloat = end - self.fanWidth
-            
-            self.drawSegmentPoints(inView: segment,
+            self.drawSegmentPoints(inView: section,
                                    innerPadding: self.separatorPadding,
                                    side: separatorHeight,
                                    leadingAngle: start - .pi/2,
                                    trailingAngle: end - .pi/2)
-            self.container.addSubview(segment)
-            sector.button = segment
         }
         
         self.container.isUserInteractionEnabled = false
         self.addSubview(self.container)
         
         // Add Central image
-        let mask = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 58, height: 58)))
-        mask.image = UIImage(named: "wheel")
-        mask.center = CGPoint(x: self.container.center.x, y: self.container.center.y + 3)
-        self.container.addSubview(mask)
+        let centerImage = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 58, height: 58)))
+        centerImage.image = UIImage(named: "wheel")
+        centerImage.center = CGPoint(x: self.container.center.x, y: self.container.center.y + 5)
+        self.container.addSubview(centerImage)
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         let touchPoint: CGPoint = touch.location(in: self)
         
-        if let sector = self.detectSelectedSegment(formTouch: touchPoint) {
-            self.selectSegment(atIndex: sector.sector)
+        if let sector = self.detectSelectedSegment(form: touchPoint), let data = self.dataSource {
+            if data.items[sector.index].isEnabled {
+                self.selectSegment(at: sector.index)
+            }
         }
-        return self.ignoreTaps(forTouch: touchPoint)
+        return self.ignoreTaps(for: touchPoint)
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        if let selectedIndex = self.currentSectorIndex, let button = self.sectors[selectedIndex].button {
-            self.delegate?.didselect(self, with: button.model.parrentType)
+        if let selectedIndex = self.currentSectorIndex, let section = self.sectors[selectedIndex].section {
+            self.delegate?.didSelectItem(self, type: section.model.type)
         }
-        self.deSelectSegment(atIndex: self.currentSectorIndex)
+        self.deSelectSegment(at: self.currentSectorIndex)
+    }
+    
+    
+    //MARK: - Construct Menu UI
+    
+    private func createSector(at index: Int, itemsCount: Int, angle: CGFloat) -> Sector {
+        var endAngle = self.segmentAngle * CGFloat(index) + angle/2
+        
+        if itemsCount == 2 {
+            endAngle = angle * CGFloat(index)
+        }
+        
+        let startAngle = endAngle - angle
+        let midAngle = startAngle + angle/2
+        
+        let sector = Sector(index: index,
+                            min: startAngle,
+                            mid: midAngle,
+                            max: endAngle)
+        return sector
+    }
+    
+    private func createSeparator(padding: CGFloat, height: CGFloat, angle: CGFloat, center: CGPoint, color: UIColor) -> UIView {
+        let separator = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 1, height: height)))
+        separator.backgroundColor = color
+        separator.layer.anchorPoint = CGPoint(x: 0.5, y: 1)
+        
+        let separatorStartPoint = self.getPointCoordinate(withCenterIn: center,
+                                                          radius: padding,
+                                                          angle: angle - .pi/2)
+        separator.layer.position = separatorStartPoint
+        separator.transform = CGAffineTransform(rotationAngle: angle)
+        return separator
+    }
+    
+    private func createSection(in view: UIView, rotationAngle: CGFloat, model: CircleMenuItem) -> SectionView {
+        let sectionRect = CGRect(origin: .zero, size: CGSize(width: view.bounds.width, height: view.bounds.height/2))
+        let section = SectionView(with: sectionRect, model: model, angle: 2 * .pi - rotationAngle)
+        
+        section.backgroundColor = .clear
+        section.isHighlighted = false
+        
+        section.layer.anchorPoint = CGPoint(x: 0.5, y: 1)
+        section.layer.position = view.center
+        section.transform = CGAffineTransform(rotationAngle: rotationAngle)
+        return section
     }
     
     //MARK: Private methods
     
-    private func selectSegment(atIndex index: Int) {
-        if let button = self.sectors[index].button {
+    private func selectSegment(at index: Int) {
+        if let section = self.sectors[index].section {
             self.currentSectorIndex = index
-            button.isHighLighted = true
+            section.isHighlighted = true
         }
     }
     
-    private func deSelectSegment(atIndex index: Int?) {
-        if let thisIndex = index, let button = self.sectors[thisIndex].button {
+    private func deSelectSegment(at index: Int?) {
+        if let thisIndex = index, let section = self.sectors[thisIndex].section {
             self.currentSectorIndex = nil
-            button.isHighLighted = false
+            section.isHighlighted = false
         }
     }
     
-    private func detectSelectedSegment(formTouch touchPoint: CGPoint) -> Sector? {
+    private func detectSelectedSegment(form touchPoint: CGPoint) -> Sector? {
         // Get inverted touch angle value
         let dx = container.center.x - touchPoint.x
         let dy = container.center.y - touchPoint.y
         let angle = -atan2(dx, dy)
-        print("angle in radians: \(angle)")
         
         for sector in self.sectors {
             let newAngle = angle.toPositiveRadians
@@ -183,7 +211,7 @@ class CircleMenu: UIControl {
             let min = sector.minValue.toPositiveRadians
             let max = sector.maxValue.toPositiveRadians
             
-            let regularCondition = newAngle > min.toPositiveRadians && newAngle < max
+            let regularCondition = newAngle > min && newAngle < max
             let firstElementCondition = min > max && (newAngle > min && newAngle <= 2 * .pi || newAngle < max)
             
             if regularCondition || firstElementCondition {
@@ -201,12 +229,12 @@ class CircleMenu: UIControl {
         return sqrt(pow(dx, 2) + pow(dy, 2))
     }
     
-    private func ignoreTaps(forTouch touchPoint: CGPoint) -> Bool {
+    private func ignoreTaps(for touchPoint: CGPoint) -> Bool {
         let dist: CGFloat = calculateDistance(fromCenter: touchPoint)
         
         if dist < self.separatorPadding || dist > self.container.bounds.width/2 {
             print("Ignoring tap \(touchPoint.x), \(touchPoint.y)")
-            self.deSelectSegment(atIndex: self.currentSectorIndex)
+            self.deSelectSegment(at: self.currentSectorIndex)
             return false
         }
         return true
@@ -237,6 +265,6 @@ class CircleMenu: UIControl {
         path.addArc(withCenter: bottomCenter, radius: innerPadding, startAngle: trailingAngle, endAngle: leadingAngle, clockwise: false)
         path.close()
         
-        view.mask(withPath: path, inverse: false)
+        view.applyMask(withPath: path, inverse: false)
     }
 }

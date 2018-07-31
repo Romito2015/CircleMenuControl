@@ -8,18 +8,11 @@
 
 import UIKit
 
-class CircleMenuItem {
+struct CircleMenuItem {
     
-    let parrentType: CircleMenuItemType!
-    
-    let icon: UIImage
-    let title: String
+    let type: CircleMenuItemType
     let isEnabled: Bool
     
-    required init(with icon: UIImage, type: CircleMenuItemType, isEnabled: Bool) {
-        self.icon = icon
-        self.parrentType = type
-        self.title = type.rawValue
-        self.isEnabled = isEnabled
-    }
+    var icon: UIImage { return type.icon }
+    var title: String { return type.rawValue }
 }

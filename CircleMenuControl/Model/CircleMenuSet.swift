@@ -8,12 +8,7 @@
 
 import Foundation
 
-class CircleMenuSet {
+struct CircleMenuSet {
     let title: String
     let items: [CircleMenuItem]
-    
-    init(with title: String, items: [CircleMenuItem]) {
-        self.title = title
-        self.items = items
-    }
 }

@@ -1,5 +1,5 @@
 //
-//  GradientView.swift
+//  TheGradientView.swift
 //  rrrrrr
 //
 //  Created by Roman Chopovenko on 7/21/18.
@@ -8,19 +8,28 @@
 
 import UIKit
 
-class GradientView: UIView {
+class TheGradientView: UIView {
     
-    var startColor: UIColor = .white
+    var startColor: UIColor = .clear
     var endColor: UIColor = .red
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .clear
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func draw(_ rect: CGRect) {
-        self.backgroundColor = .white
+
         let context = UIGraphicsGetCurrentContext()!
         let colors = [startColor.cgColor, endColor.cgColor]
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         
-        let colorLocations: [CGFloat] = [0.0, 0.4]
+        let colorLocations: [CGFloat] = [0.0, 0.8]
         
         let gradient = CGGradient(colorsSpace: colorSpace,
                                   colors: colors as CFArray,
@@ -34,3 +43,4 @@ class GradientView: UIView {
                                    options: [])
     }
 }
+
